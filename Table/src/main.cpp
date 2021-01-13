@@ -141,17 +141,46 @@ void setup() {
   tapeled::b2_led.show();
   tapeled::b3_led.begin();
   tapeled::b3_led.show();
+  pinMode(2,OUTPUT);
+  wake_up(NULL,9);
 }
 
+unsigned long preTime = 0;
+bool state=false;
 ///
 /// @brief loop
 ///
 void loop() {
-  receiver.update();
+///7.8us
+  digitalWrite(2,HIGH);
+  //receiver.update();
+  digitalWrite(2,LOW);
 
+  if(millis()-preTime > 2000){
+    if(state == HIGH){
+      boal_emission_init(NULL, 9);
+      state=LOW;
+    }else if (state==LOW){
+      boal_emission(NULL, 9);
+      state=HIGH;
+    }
+    preTime=millis();
+  }
+//4.9us
   if(isActive) {
     table.update();
-  }
+    /*
+    table.updateの時間
+    standby 32us
+    ready 32us
+    game 32us->bonus 54us
+    */
 
+ }
+//
+///
   delay(1);
 }
+
+
+
