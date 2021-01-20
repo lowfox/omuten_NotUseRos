@@ -7,6 +7,7 @@
 #include <Servo.h>
 #include "CommandSender.h"
 #include <Adafruit_NeoPixel.h>
+#include <MsTimer2.h>
 
 namespace tapeled
 {
@@ -17,6 +18,12 @@ Adafruit_NeoPixel b1_led(m_bonus_led_cnt, m_b1_led_pin, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel b2_led(m_bonus_led_cnt, m_b2_led_pin, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel b3_led(m_bonus_led_cnt, m_b3_led_pin, NEO_GRB + NEO_KHZ800);
 } // namespace name
+
+namespace angle
+{
+    int m_goalAngle;
+} // namespace angle
+
 
 struct Color {
     uint32_t r : 8;
@@ -38,7 +45,6 @@ private:
     };
 
     ServoInfo servos[4];
-    ServoInfo goalServo;
     bool m_isActive = false;
 
     CommandSender<SendCommand>* m_sender;
@@ -71,7 +77,6 @@ private:
      float m_angle_y1;
 
 
-    int m_goalAngle;
 public: 
 
     Table(const uint8_t* pins, CommandSender<SendCommand>* sender) {
@@ -82,7 +87,6 @@ public:
             itr.pin = *pin;
             pin++;
         }
-        goalServo.pin = m_goalServo_pin;
         m_sender = sender;
 
     }
@@ -99,7 +103,6 @@ public:
         for(auto& itr : servos){
             itr.servo.attach(itr.pin);
         }
-        goalServo.servo.attach(goalServo.pin);
         // center
         rotate(Table::ServoCenter, Table::ServoCenter, Table::ServoCenter, Table::ServoCenter);
 
@@ -111,7 +114,6 @@ public:
         pinMode(m_bonus3_pin,INPUT);
         pinMode(m_debug_pin, OUTPUT);
         digitalWrite(m_debug_pin,LOW);
-        goalServo.servo.write(63);
         m_isActive = true;
     }
 
@@ -130,7 +132,6 @@ public:
         // TO-DO
         // ボール排出用サーボ,ゴール検知、ボーナスエリアの終了処理
 
-        goalServo.servo.detach();
         m_isActive = false;
     }
 
@@ -175,7 +176,7 @@ public:
     ///
     void boal_emission() {
 //        goalServo.servo.write(138);
-        m_goalAngle=1840;
+        angle::m_goalAngle=1840;
     }
 
     ///
@@ -184,7 +185,7 @@ public:
     void boal_emission_init() {
  //       digitalWrite(m_debug_pin,HIGH);
 //        goalServo.servo.write(64);
-        m_goalAngle=1059;//１度あたり10.5555usec最後に₊５００usec
+        angle::m_goalAngle=1059;//１度あたり10.5555usec最後に₊５００usec
     }
     ///
     /// @brief 時間表示LEDを点灯する
@@ -313,9 +314,6 @@ public:
         servos[2].servo.write(m_angle_y0);
         servos[3].servo.write(m_angle_x1);
         */
-
-        goalServo.servo.writeMicroseconds(m_goalAngle);//１度あたり10.5555usec最後に₊５００usec
-        //
 
         // ゴール検知
         if(digitalRead(m_goal_pin)==LOW) {

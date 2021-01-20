@@ -110,6 +110,10 @@ void decoration_led(uint8_t* ptr, uint8_t size) {
 void bonus_led(uint8_t* ptr, uint8_t size){
   table.bonusLED(*ptr);
 }
+ Servo goal_servo;
+void goalServoDrive(){
+      goal_servo.writeMicroseconds(angle::m_goalAngle);//１度あたり10.5555usec最後に₊５００usec
+}
 
 ///
 /// @brief setup
@@ -143,6 +147,8 @@ void setup() {
   tapeled::b3_led.show();
   pinMode(2,OUTPUT);
   wake_up(NULL,9);
+  goal_servo.attach(m_goalServo_pin);
+
 }
 
 unsigned long preTime = 0;
@@ -153,10 +159,12 @@ bool state=false;
 void loop() {
 ///7.8us
   digitalWrite(2,HIGH);
-  //receiver.update();
+  receiver.update();
   digitalWrite(2,LOW);
 
+/*
   if(millis()-preTime > 2000){
+
     if(state == HIGH){
       boal_emission_init(NULL, 9);
       state=LOW;
@@ -166,9 +174,11 @@ void loop() {
     }
     preTime=millis();
   }
+  */
 //4.9us
   if(isActive) {
     table.update();
+    goalServoDrive();
     /*
     table.updateの時間
     standby 32us
