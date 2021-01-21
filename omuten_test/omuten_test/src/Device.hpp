@@ -94,7 +94,7 @@ public:
 			while (serial.available() < 4) {
 				serial.writeByte(1);
 				serial.writeByte(0);
-				System::Sleep(10);
+				System::Sleep(20);
 			}
 			auto packet = serial.readBytes();
 			if (m_deviceID == packet[2]) {

@@ -151,31 +151,14 @@ void setup() {
 
 }
 
-unsigned long preTime = 0;
-bool state=false;
 ///
 /// @brief loop
 ///
 void loop() {
-///7.8us
-  digitalWrite(2,HIGH);
+  //digitalWrite(2,HIGH);//オシロでループ速度測定のため
   receiver.update();
-  digitalWrite(2,LOW);
+  //digitalWrite(2,LOW);
 
-/*
-  if(millis()-preTime > 2000){
-
-    if(state == HIGH){
-      boal_emission_init(NULL, 9);
-      state=LOW;
-    }else if (state==LOW){
-      boal_emission(NULL, 9);
-      state=HIGH;
-    }
-    preTime=millis();
-  }
-  */
-//4.9us
   if(isActive) {
     table.update();
     goalServoDrive();
@@ -187,8 +170,6 @@ void loop() {
     */
 
  }
-//
-///
   delay(1);
 }
 

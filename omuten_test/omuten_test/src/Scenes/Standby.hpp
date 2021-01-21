@@ -32,7 +32,6 @@ public:
         seesawX = sharedData.seesawX;
         seesawY = sharedData.seesawY;
         table = sharedData.table;
-        table->setServoAngle(SeesawToServoAngle(INIT_POS_X, INIT_POS_Y));
         seesawX->init();
         seesawY->init();
         standbyBGM.setVolume(0.3);
@@ -41,11 +40,12 @@ public:
         //DEBUG
         table->boalEmission();
         //
-
+        table->bonusLED(0);
     }
 
     void update() override
     {
+         table->setServoAngle(SeesawToServoAngle(INIT_POS_X, INIT_POS_Y));
         
         if (SimpleGUI::Button(U"‚à‚Ç‚é", Vec2(0, 0)))
         {

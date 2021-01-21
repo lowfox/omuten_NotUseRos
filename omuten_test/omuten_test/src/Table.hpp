@@ -1,22 +1,21 @@
 #pragma once
 #include "Device.hpp"
-#define INIT_POS_X 15.0f
-#define INIT_POS_Y 15.0f
+#define INIT_POS_X 8.0f
+#define INIT_POS_Y 8.0f
 
 //Float4 SeesawToServoAngle(float x,float y) {
 Float4 SeesawToServoAngle(float y,float x) {
 	Float4 float4;
 	x *= (-1);
-	float4.x = servo_angle_calc(static_cast<float>(x)) + 90.0f;
-	float4.y = servo_angle_calc(static_cast<float>(x * -1.0f)) + 90.0f;
-	float4.z = servo_angle_calc(static_cast<float>(y)) + 90.0f;
-	float4.w = servo_angle_calc(static_cast<float>(y * -1.0f)) + 90.0f;
-	if(float4.x<0.0f){
-		float4.x+=5.0f;
-	}
-	float4.y+=3.2f;
-	float4.z+=5.0f;
-	float4.w+=5.0f;
+
+	float4.x = servo_angle_calc(static_cast<float>(x)) + 90.0f;//x0
+	float4.y = servo_angle_calc(static_cast<float>(x * -1.0f)) + 90.0f;//x1
+	float4.z = servo_angle_calc(static_cast<float>(y)) + 90.0f;//y0
+	float4.w = servo_angle_calc(static_cast<float>(y * -1.0f)) + 90.0f;//y1
+	float4.x+=5.0f;//x0
+	float4.y+=5.0f;//x1
+	float4.z-=8.0f;//y0
+	float4.w+=2.2f;//y1//3.2
 	
 	return float4;
 }
@@ -25,7 +24,7 @@ class Table {
 public:
 
 	enum class SendCommand {
-		WHO_AN_I,
+		WHO_AM_I,
 		WAKE_UP,
 		SLEEP,
 		TABLE_ROTATE,
